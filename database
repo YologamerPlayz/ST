@@ -1,3 +1,7 @@
+DROP DATABASE if exists TL;
+CREATE DATABASE TL DEFAULT CHARSET=greek;
+USE TL;
+
 -- 1. Πίνακας χρηστών
 CREATE TABLE users (
   id             SERIAL PRIMARY KEY,
@@ -125,5 +129,5 @@ CREATE TABLE messages (
   sender_id       INTEGER NOT NULL
     REFERENCES users(id),
   content         TEXT NOT NULL,
-  created_at      TIMESTAMP WITH TIME ZONE DEFAULT now()
+  created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
