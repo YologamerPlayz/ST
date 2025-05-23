@@ -77,17 +77,14 @@ public class LoginScreen extends JFrame {
 	    });
 	}
 
-    private void showDashboard() {
-        // Clear existing content
-        getContentPane().removeAll();
+	private void showDashboard() {
+	    getContentPane().removeAll();
 
-        // Create new content
-        JPanel dashboardPanel = new JPanel();
-        dashboardPanel.add(new JLabel("Welcome to the dashboard!"));
+	    // Load the ActionsScreen panel
+	    ActionScreen actionsPanel = new ActionScreen();
+	    getContentPane().add(actionsPanel);
 
-        // Add and refresh
-        getContentPane().add(dashboardPanel);
-        revalidate();
-        repaint();
-    }
+	    revalidate();
+	    repaint();
+	}
 }
