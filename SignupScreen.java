@@ -7,6 +7,7 @@ public class SignupScreen extends JPanel {
     private JPanel formPanel;
     private JComboBox<String> userTypeCombo;
     private JTextField nameField, emailField, phoneField;
+    private JPasswordField passwordField;
     private JComboBox<String> specialtyCombo;
 
     public SignupScreen(MainApp mainApp) {
@@ -54,11 +55,28 @@ public class SignupScreen extends JPanel {
             String name = nameField.getText();
             String email = emailField.getText();
             String phone = phoneField.getText();
+            String password = new String(passwordField.getPassword());
+            
+            // Validate phone number: must be 10 digits
+            if (!phone.matches("\\d{10}")) {
+                JOptionPane.showMessageDialog(this,
+                        "Please enter a valid phone number.",
+                        "Invalid Phone Number",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            else if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Please fill all the fields.",
+                        "Missing Information",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
             String specialty = (type.equals("Technician") ? (String) specialtyCombo.getSelectedItem() : "N/A");
 
-            JOptionPane.showMessageDialog(this,
-                String.format("%s Registered!\nName: %s\nEmail: %s\nPhone: %s\nSpecialty: %s",
-                    type, name, email, phone, specialty));
+            JOptionPane.showMessageDialog(this, String.format("%s Registered!\nName: %s\nEmail: %s\nPhone: %s\nSpecialty: %s\nPassword: %s", type, name, email, phone, specialty, password));
 
             mainApp.switchToLogin(); // Back to login
         });
@@ -101,6 +119,13 @@ public class SignupScreen extends JPanel {
             });
             formPanel.add(specialtyCombo, gbc);
         }
+        
+        // Password
+        gbc.gridx = 0; gbc.gridy++;
+        formPanel.add(new JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        formPanel.add(passwordField, gbc);
 
         revalidate();
         repaint();
