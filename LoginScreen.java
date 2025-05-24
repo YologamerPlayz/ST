@@ -29,7 +29,7 @@ public class LoginScreen extends JPanel {
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel userLabel = new JLabel("Username:");
+        JLabel userLabel = new JLabel("Email:");
         JTextField userField = new JTextField(20);
 
         JLabel passLabel = new JLabel("Password:");
