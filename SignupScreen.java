@@ -5,8 +5,9 @@ public class SignupScreen extends JPanel {
     private MainApp mainApp;
 
     private JPanel formPanel;
-    private JTextField nameField, emailField, phoneField, specialtyField;
     private JComboBox<String> userTypeCombo;
+    private JTextField nameField, emailField, phoneField;
+    private JComboBox<String> specialtyCombo;
 
     public SignupScreen(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -53,7 +54,7 @@ public class SignupScreen extends JPanel {
             String name = nameField.getText();
             String email = emailField.getText();
             String phone = phoneField.getText();
-            String specialty = (type.equals("Technician") ? specialtyField.getText() : "N/A");
+            String specialty = (type.equals("Technician") ? (String) specialtyCombo.getSelectedItem() : "N/A");
 
             JOptionPane.showMessageDialog(this,
                 String.format("%s Registered!\nName: %s\nEmail: %s\nPhone: %s\nSpecialty: %s",
@@ -95,8 +96,10 @@ public class SignupScreen extends JPanel {
             gbc.gridx = 0; gbc.gridy++;
             formPanel.add(new JLabel("Specialty:"), gbc);
             gbc.gridx = 1;
-            specialtyField = new JTextField(20);
-            formPanel.add(specialtyField, gbc);
+            specialtyCombo = new JComboBox<>(new String[] {
+            	    "Plumber", "Electrician", "Steamfitter"
+            });
+            formPanel.add(specialtyCombo, gbc);
         }
 
         revalidate();
