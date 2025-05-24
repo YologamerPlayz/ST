@@ -72,18 +72,41 @@ public class LoginScreen extends JPanel {
         outerGbc.gridy = 1;
         add(formPanel, outerGbc);
 
-        // Login logic
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String username = userField.getText();
-                String password = new String(passField.getPassword());
 
-                if (username.equals("admin") && password.equals("password")) {
-                    mainApp.switchToActions();
-                } else {
-                    statusLabel.setText("Invalid credentials.");
-                }
+// Login logic
+loginButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        String username = userField.getText().trim();
+        String password = new String(passField.getPassword()).trim();
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
+
+            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Επιτυχής σύνδεση
+                statusLabel.setText("Login successful.");
+                mainApp.switchToActions();
+            } else {
+                statusLabel.setText("Invalid credentials.");
             }
-        });
+
+            rs.close();
+            stmt.close();
+            connection.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            statusLabel.setText("Database error.");
+        }
+    }
+});
+
     }
 }
