@@ -25,8 +25,14 @@ public class MainApp extends JFrame {
         repaint();
     }
 
-    public void switchToActions() {
-        setContentPane(new ActionScreen());
+    public void switchToClientActions() {
+        setContentPane(new ClientActionScreen());
+        revalidate();
+        repaint();
+    }
+
+    public void switchToTechnicianActions() {
+        setContentPane(new TechnicianActionScreen());
         revalidate();
         repaint();
     }
