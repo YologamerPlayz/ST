@@ -33,8 +33,8 @@ public class LoginScreen extends JPanel {
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel userLabel = new JLabel("Email:");
-        JTextField userField = new JTextField(20);
+        JLabel emailLabel = new JLabel("Email:");
+        JTextField emailField = new JTextField(20);
 
         JLabel passLabel = new JLabel("Password:");
         JPasswordField passField = new JPasswordField(20);
@@ -44,9 +44,9 @@ public class LoginScreen extends JPanel {
 
         // Add fields
         gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(userLabel, gbc);
+        formPanel.add(emailLabel, gbc);
         gbc.gridx = 1;
-        formPanel.add(userField, gbc);
+        formPanel.add(emailField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
         formPanel.add(passLabel, gbc);
@@ -80,7 +80,7 @@ public class LoginScreen extends JPanel {
 // Login logic
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String username = userField.getText().trim();
+                String username = emailField.getText().trim();
                 String password = new String(passField.getPassword()).trim();
 
                 try {
