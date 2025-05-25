@@ -1,5 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class SignupScreen extends JPanel {
     private MainApp mainApp;
@@ -76,9 +80,66 @@ public class SignupScreen extends JPanel {
             
             String specialty = (type.equals("Technician") ? (String) specialtyCombo.getSelectedItem() : "N/A");
 
-            JOptionPane.showMessageDialog(this, String.format("%s Registered!\nName: %s\nEmail: %s\nPhone: %s\nSpecialty: %s\nPassword: %s", type, name, email, phone, specialty, password));
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection conn = DriverManager.getConnection(
+                        "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
 
-            mainApp.switchToLogin(); // Back to login
+                // 1. Insert into users
+                String userInsert = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
+                PreparedStatement userStmt = conn.prepareStatement(userInsert, PreparedStatement.RETURN_GENERATED_KEYS);
+                userStmt.setString(1, name);
+                userStmt.setString(2, email);
+                userStmt.setString(3, phone);
+                userStmt.setString(4, password);
+                userStmt.executeUpdate();
+
+                // Get generated user_id
+                ResultSet generatedKeys = userStmt.getGeneratedKeys();
+                int userId = -1;
+                if (generatedKeys.next()) {
+                    userId = generatedKeys.getInt(1);
+                }
+
+                if (userId != -1) {
+                    if (type.equals("Client")) {
+                        String clientInsert = "INSERT INTO clients (user_id, address, history) VALUES (?, '', '')";
+                        PreparedStatement clientStmt = conn.prepareStatement(clientInsert);
+                        clientStmt.setInt(1, userId);
+                        clientStmt.executeUpdate();
+                        clientStmt.close();
+                    } else if (type.equals("Technician")) {
+                        String techInsert = "INSERT INTO technicians (user_id, specialty, rating) VALUES (?, ?, 0.0)";
+                        PreparedStatement techStmt = conn.prepareStatement(techInsert);
+                        techStmt.setInt(1, userId);
+                        techStmt.setString(2, specialty);
+                        techStmt.executeUpdate();
+                        techStmt.close();
+                    }
+
+                    JOptionPane.showMessageDialog(this,
+                            type + " registered successfully!\nNow you can login.",
+                            "Registration Successful",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    mainApp.switchToLogin(); // Go to login screen
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Failed to register user.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+                userStmt.close();
+                conn.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Database error during registration.",
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
         });
     }
 
