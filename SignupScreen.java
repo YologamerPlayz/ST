@@ -83,7 +83,7 @@ public class SignupScreen extends JPanel {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 Connection conn = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
+                        "jdbc:mysql://localhost:3306/TL", "root", "12345");
 
                 // 1. Insert into users
                 String userInsert = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
