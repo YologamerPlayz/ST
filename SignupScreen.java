@@ -49,6 +49,15 @@ public class SignupScreen extends JPanel {
         JButton submitButton = new JButton("Submit");
         outerGbc.gridy = 3;
         add(submitButton, outerGbc);
+        
+     // Return to login button
+        JButton returnButton = new JButton("Return to login");
+        outerGbc.gridy = 4;
+        add(returnButton, outerGbc);
+
+        // Action for Return to login
+        returnButton.addActionListener(e -> mainApp.switchToLogin());
+
 
         // Switch between forms
         userTypeCombo.addActionListener(e -> updateForm((String) userTypeCombo.getSelectedItem()));
