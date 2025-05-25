@@ -80,17 +80,17 @@ public class LoginScreen extends JPanel {
 // Login logic
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String username = emailField.getText().trim();
+                String email = emailField.getText().trim();
                 String password = new String(passField.getPassword()).trim();
 
                 try {
                     Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection connection = DriverManager.getConnection(
-                            "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
+                            "jdbc:mysql://localhost:3306/TL", "root", "12345");
 
                     String query = "SELECT * FROM users WHERE email = ? AND password = ?";
                     PreparedStatement stmt = connection.prepareStatement(query);
-                    stmt.setString(1, username);
+                    stmt.setString(1, email);
                     stmt.setString(2, password);
                     ResultSet rs = stmt.executeQuery();
 
