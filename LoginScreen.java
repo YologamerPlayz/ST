@@ -121,7 +121,11 @@ public class LoginScreen extends JPanel {
 
                         // Εμφάνιση ρόλου
                         JOptionPane.showMessageDialog(null, "Login successful. You are a " + role + ".", "Login Info", JOptionPane.INFORMATION_MESSAGE);
-                        mainApp.switchToActions();
+                        if (role.equals("Client")) {
+                            mainApp.switchToClientActions();
+                        } else {
+                            mainApp.switchToTechnicianActions();
+                        }
 
                     } else {
                         statusLabel.setText("Invalid credentials.");
