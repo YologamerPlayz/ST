@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class LoginScreen extends JPanel {
     private MainApp mainApp;
@@ -74,39 +78,65 @@ public class LoginScreen extends JPanel {
 
 
 // Login logic
-loginButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        String username = userField.getText().trim();
-        String password = new String(passField.getPassword()).trim();
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String username = userField.getText().trim();
+                String password = new String(passField.getPassword()).trim();
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection connection = DriverManager.getConnection(
+                            "jdbc:mysql://localhost:3306/TL", "root", "panagiotis");
 
-            String query = "SELECT * FROM users WHERE email = ? AND password = ?";
-            PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
+                    String query = "SELECT * FROM users WHERE email = ? AND password = ?";
+                    PreparedStatement stmt = connection.prepareStatement(query);
+                    stmt.setString(1, username);
+                    stmt.setString(2, password);
+                    ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                // Επιτυχής σύνδεση
-                statusLabel.setText("Login successful.");
-                mainApp.switchToActions();
-            } else {
-                statusLabel.setText("Invalid credentials.");
+                    if (rs.next()) {
+                        int userId = rs.getInt("id");
+
+                        // Έλεγχος αν είναι client
+                        String role = "Unknown";
+                        PreparedStatement roleStmt = connection.prepareStatement("SELECT * FROM clients WHERE user_id = ?");
+                        roleStmt.setInt(1, userId);
+                        ResultSet roleRs = roleStmt.executeQuery();
+
+                        if (roleRs.next()) {
+                            role = "Client";
+                        } else {
+                            // Αν δεν είναι client, έλεγξε αν είναι technician
+                            roleStmt = connection.prepareStatement("SELECT * FROM technicians WHERE user_id = ?");
+                            roleStmt.setInt(1, userId);
+                            roleRs = roleStmt.executeQuery();
+
+                            if (roleRs.next()) {
+                                role = "Technician";
+                            }
+                        }
+
+                        roleRs.close();
+                        roleStmt.close();
+
+                        // Εμφάνιση ρόλου
+                        JOptionPane.showMessageDialog(null, "Login successful. You are a " + role + ".", "Login Info", JOptionPane.INFORMATION_MESSAGE);
+                        mainApp.switchToActions();
+
+                    } else {
+                        statusLabel.setText("Invalid credentials.");
+                    }
+
+
+                    rs.close();
+                    stmt.close();
+                    connection.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    statusLabel.setText("Database error.");
+                }
             }
-
-            rs.close();
-            stmt.close();
-            connection.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            statusLabel.setText("Database error.");
-        }
-    }
-});
+        });
 
     }
 }
