@@ -56,7 +56,7 @@ public class SignupScreen extends JPanel {
         add(returnButton, outerGbc);
 
         // Action for Return to login
-        returnButton.addActionListener(e -> mainApp.switchToLogin());
+        returnButton.addActionListener(e -> mainApp.switchScreen(new LoginScreen(mainApp)));
 
 
         // Switch between forms
@@ -131,7 +131,7 @@ public class SignupScreen extends JPanel {
                             "Registration Successful",
                             JOptionPane.INFORMATION_MESSAGE);
 
-                    mainApp.switchToLogin(); // Go to login screen
+                    mainApp.switchScreen(new LoginScreen(mainApp)); // Go to login screen
                 } else {
                     JOptionPane.showMessageDialog(this,
                             "Failed to register user.",
