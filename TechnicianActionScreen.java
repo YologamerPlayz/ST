@@ -11,22 +11,17 @@ public class TechnicianActionScreen extends JPanel {
 
     public TechnicianActionScreen(MainApp mainApp) {
         this.mainApp = mainApp;
-        
+
         setLayout(new BorderLayout());
-        
-        // Top panel for the Show User Info button
+
+        // Top panel με κουμπί εμφάνισης πληροφοριών χρήστη
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton showUserInfoBtn = new JButton("Show User Info");
-        showUserInfoBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleUserInfo();
-            }
-        });
+        showUserInfoBtn.addActionListener(e -> toggleUserInfo());
         topPanel.add(showUserInfoBtn);
         add(topPanel, BorderLayout.NORTH);
-        
-        // Center panel for main content
+
+        // Center panel με τίτλο και κουμπιά
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 20, 15, 20);
@@ -37,16 +32,33 @@ public class TechnicianActionScreen extends JPanel {
         gbc.gridy = 0;
         centerPanel.add(title, gbc);
 
+        // Κουμπιά επιλογών
         String[] actions = {"Notifications", "View Calendar", "View History"};
         for (int i = 0; i < actions.length; i++) {
-            JButton btn = new JButton(actions[i]);
+            String action = actions[i];
+            JButton btn = new JButton(action);
             gbc.gridy = i + 1;
             centerPanel.add(btn, gbc);
+
+            int index = i;
+            btn.addActionListener(e -> {
+                switch (index) {
+                    case 0:
+                        JOptionPane.showMessageDialog(null, "Notifications coming soon!");
+                        break;
+                    case 1:
+                        mainApp.setContentPanel(new TechnicianCalendarScreen(mainApp));
+                        break;
+                    case 2:
+                        JOptionPane.showMessageDialog(null, "History feature coming soon!");
+                        break;
+                }
+            });
         }
-        
+
         add(centerPanel, BorderLayout.CENTER);
-        
-        // User info panel (initially hidden)
+
+        // Πάνελ με πληροφορίες χρήστη (αρχικά κρυφό)
         userInfoPanel = new JPanel();
         userInfoPanel.setLayout(new BoxLayout(userInfoPanel, BoxLayout.Y_AXIS));
         userInfoPanel.setBorder(BorderFactory.createTitledBorder("User Information"));
@@ -55,13 +67,13 @@ public class TechnicianActionScreen extends JPanel {
         eastWrapper.add(userInfoPanel);
         add(eastWrapper, BorderLayout.EAST);
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(new ImageIcon("hammer_time.jpg").getImage(), 0, 0, getWidth(), getHeight(), this);
     }
-    
+
     private void toggleUserInfo() {
         if (userInfoVisible) {
             userInfoPanel.setVisible(false);
@@ -74,33 +86,29 @@ public class TechnicianActionScreen extends JPanel {
         revalidate();
         repaint();
     }
-    
+
     private void loadAndDisplayUserInfo() {
         userInfoPanel.removeAll();
-        
+
         try {
-            // Get user ID - replace this with your method to get the current user's ID
             int userId = mainApp.getCurrentUserId();
-            
-            // Database connection - adjust connection parameters as needed
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345");
-            
-            // Query to get user info and technician specialty
+
             String query = "SELECT u.name, u.email, u.phone, t.specialty, t.rating " +
-                          "FROM users u " +
-                          "JOIN technicians t ON u.id = t.user_id " +
-                          "WHERE u.id = ?";
+                           "FROM users u " +
+                           "JOIN technicians t ON u.id = t.user_id " +
+                           "WHERE u.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
                 String name = rs.getString("name");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String specialty = rs.getString("specialty");
                 double rating = rs.getDouble("rating");
-                
+
                 userInfoPanel.add(new JLabel("Name: " + (name != null ? name : "N/A")));
                 userInfoPanel.add(Box.createVerticalStrut(5));
                 userInfoPanel.add(new JLabel("Email: " + (email != null ? email : "N/A")));
@@ -110,7 +118,7 @@ public class TechnicianActionScreen extends JPanel {
                 userInfoPanel.add(new JLabel("Specialty: " + (specialty != null ? specialty : "N/A")));
                 userInfoPanel.add(Box.createVerticalStrut(5));
                 userInfoPanel.add(new JLabel("Rating: " + rating + "/5.0"));
-                
+                // Κουμπί Logout
                 userInfoPanel.add(Box.createVerticalStrut(10)); // spacing
                 JButton logoutButton = new JButton("Logout");
                 logoutButton.addActionListener(e -> {
@@ -125,11 +133,11 @@ public class TechnicianActionScreen extends JPanel {
             } else {
                 userInfoPanel.add(new JLabel("User not found"));
             }
-            
+
             rs.close();
             pstmt.close();
             conn.close();
-            
+
         } catch (SQLException e) {
             userInfoPanel.add(new JLabel("Error loading user info"));
             e.printStackTrace();
