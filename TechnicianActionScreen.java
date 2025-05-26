@@ -110,6 +110,18 @@ public class TechnicianActionScreen extends JPanel {
                 userInfoPanel.add(new JLabel("Specialty: " + (specialty != null ? specialty : "N/A")));
                 userInfoPanel.add(Box.createVerticalStrut(5));
                 userInfoPanel.add(new JLabel("Rating: " + rating + "/5.0"));
+                
+                userInfoPanel.add(Box.createVerticalStrut(10)); // spacing
+                JButton logoutButton = new JButton("Logout");
+                logoutButton.addActionListener(e -> {
+                    mainApp.setCurrentUserId(-1); // reset session
+                    mainApp.setCurrentUserRole(null); // reset role if stored
+                    mainApp.switchScreen(new LoginScreen(mainApp)); // go back to login
+                });
+                JPanel logoutWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
+                logoutWrapper.add(logoutButton);
+                userInfoPanel.add(logoutWrapper);
+                
             } else {
                 userInfoPanel.add(new JLabel("User not found"));
             }
