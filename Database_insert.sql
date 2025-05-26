@@ -29,29 +29,28 @@ INSERT INTO clients (user_id, address, history) VALUES
 (10, 'Chania, Greece', 'Προτιμά μετρητά');
 
 
--- Εισαγωγή τεχνικών στον πίνακα users
+-- Εισαγωγή 10 τεχνικών (users)
 INSERT INTO users (name, password, email, phone) VALUES
-('Νίκος Ηλεκτρολόγος', 'pass123', 'nikos@tech.gr', '6900000001'),
-('Γιώργος Ψυκτικός', 'pass123', 'giorgos@tech.gr', '6900000002'),
-('Μαρία Υδραυλικός', 'pass123', 'maria@tech.gr', '6900000003'),
-('Σπύρος Ηλεκτρολόγος', 'pass123', 'spyros@tech.gr', '6900000004'),
-('Άννα Ψυκτικός', 'pass123', 'anna@tech.gr', '6900000005'),
-('Δημήτρης Υδραυλικός', 'pass123', 'dimitris@tech.gr', '6900000006'),
-('Κατερίνα Ηλεκτρολόγος', 'pass123', 'katerina@tech.gr', '6900000007'),
-('Πέτρος Ψυκτικός', 'pass123', 'petros@tech.gr', '6900000008'),
-('Ελένη Υδραυλικός', 'pass123', 'eleni@tech.gr', '6900000009'),
-('Μιχάλης Ηλεκτρολόγος', 'pass123', 'michalis@tech.gr', '6900000010');
+('Stelios Kalogeropoulos', 'elektro1', 'stelios@tech.com', '6900000101'),
+('Niki Antoniou', 'coolair2', 'niki@tech.com', '6900000102'),
+('Vasilis Raptis', 'hydra3', 'vasilis@tech.com', '6900000103'),
+('Eirini Theodorou', 'elektro4', 'eirini@tech.com', '6900000104'),
+('Giannis Laskaris', 'coolair5', 'giannis@tech.com', '6900000105'),
+('Maria Konstantinou', 'hydra6', 'maria.k@tech.com', '6900000106'),
+('Christos Mpouzis', 'elektro7', 'christos@tech.com', '6900000107'),
+('Eleni Pappa', 'coolair8', 'eleni.p@tech.com', '6900000108'),
+('Thanasis Karalis', 'hydra9', 'thanasis@tech.com', '6900000109'),
+('Georgia Spiliou', 'elektro10', 'georgia@tech.com', '6900000110');
 
--- Εισαγωγή στον πίνακα technicians
--- Σημείωση: Υποθέτουμε ότι τα ids είναι από 1 έως 10
+-- Εισαγωγή 10 technicians (ίδια user_ids με τους παραπάνω)
 INSERT INTO technicians (user_id, specialty, rating) VALUES
-(1, 'Ηλεκτρολόγος', 4.5),
-(2, 'Ψυκτικός', 4.2),
-(3, 'Υδραυλικός', 4.8),
-(4, 'Ηλεκτρολόγος', 3.9),
-(5, 'Ψυκτικός', 4.0),
-(6, 'Υδραυλικός', 4.1),
-(7, 'Ηλεκτρολόγος', 4.3),
-(8, 'Ψυκτικός', 3.8),
-(9, 'Υδραυλικός', 4.7),
-(10, 'Ηλεκτρολόγος', 4.6);
+(11, 'Ηλεκτρολόγος', 4.6),
+(12, 'Ψυκτικός', 4.2),
+(13, 'Υδραυλικός', 4.4),
+(14, 'Ηλεκτρολόγος', 4.1),
+(15, 'Ψυκτικός', 4.5),
+(16, 'Υδραυλικός', 4.7),
+(17, 'Ηλεκτρολόγος', 3.9),
+(18, 'Ψυκτικός', 4.0),
+(19, 'Υδραυλικός', 4.3),
+(20, 'Ηλεκτρολόγος', 4.8);
