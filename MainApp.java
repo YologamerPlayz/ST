@@ -12,27 +12,17 @@ public class MainApp extends JFrame {
         setContentPane(new LoginScreen(this));
         setVisible(true);
     }
-
-    public void switchToLogin() {
-        setContentPane(new LoginScreen(this));
-        revalidate();
-        repaint();
-    }
-
-    public void switchToSignup() {
-        setContentPane(new SignupScreen(this));
-        revalidate();
-        repaint();
-    }
-
-    public void switchToClientActions() {
-        setContentPane(new ClientActionScreen());
-        revalidate();
-        repaint();
-    }
-
-    public void switchToTechnicianActions() {
-        setContentPane(new TechnicianActionScreen());
+    
+    private int currentUserId;
+    public void setCurrentUserId(int id) { this.currentUserId = id; }
+    public int getCurrentUserId() { return currentUserId; }
+    
+    private String currentUserRole;
+    public void setCurrentUserRole(String role) { this.currentUserRole = role; }
+    public String getCurrentUserRole() { return currentUserRole; }
+    
+    public void switchScreen(JPanel panel) {
+        setContentPane(panel);
         revalidate();
         repaint();
     }
