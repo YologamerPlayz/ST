@@ -67,7 +67,7 @@ public class LoginScreen extends JPanel {
         signupLink.setForeground(Color.BLUE);
         signupLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        signupLink.addActionListener(e -> mainApp.switchToSignup());
+        signupLink.addActionListener(e -> mainApp.switchScreen(new SignupScreen(mainApp)));
 
         gbc.gridx = 1; gbc.gridy = 4;
         formPanel.add(signupLink, gbc);
@@ -96,6 +96,7 @@ public class LoginScreen extends JPanel {
 
                     if (rs.next()) {
                         int userId = rs.getInt("id");
+                        mainApp.setCurrentUserId(userId);
 
                         // Έλεγχος αν είναι client
                         String role = "Unknown";
@@ -121,10 +122,11 @@ public class LoginScreen extends JPanel {
 
                         // Εμφάνιση ρόλου
                         JOptionPane.showMessageDialog(null, "Login successful. You are a " + role + ".", "Login Info", JOptionPane.INFORMATION_MESSAGE);
+                        mainApp.setCurrentUserRole(role);
                         if (role.equals("Client")) {
-                            mainApp.switchToClientActions();
+                            mainApp.switchScreen(new ClientActionScreen(mainApp));
                         } else {
-                            mainApp.switchToTechnicianActions();
+                        	mainApp.switchScreen(new TechnicianActionScreen(mainApp));
                         }
 
                     } else {
