@@ -143,7 +143,7 @@ public class FindTechnicianScreen extends JPanel {
             if (rs.next()) {
                 selectedTechnicianId = rs.getInt("user_id");
                 JOptionPane.showMessageDialog(this, "Technician selected. ID: " + selectedTechnicianId, "Success", JOptionPane.INFORMATION_MESSAGE);
-                mainApp.switchScreen(new TechnicianBookingScreen(mainApp, selectedTechnicianId));
+                mainApp.switchScreen(new TechnicianOptionsScreen(mainApp, selectedTechnicianId));
             } else {
                 JOptionPane.showMessageDialog(this, "Technician not found in the database.", "Error", JOptionPane.ERROR_MESSAGE);
             }
