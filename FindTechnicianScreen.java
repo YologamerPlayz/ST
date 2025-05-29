@@ -1,25 +1,38 @@
-import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class FindTechnicianScreen extends JPanel {
     private MainApp mainApp;
     private JComboBox<String> serviceComboBox;
-    private JTextArea resultsArea;
+    private DefaultListModel<String> listModel;
+    private JList<String> techniciansList;
 
     public FindTechnicianScreen(MainApp mainApp) {
         this.mainApp = mainApp;
-        setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Find Available Technicians", SwingConstants.CENTER);
+        JLabel title = new JLabel("Find Available Technicians", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 20));
-        add(title, BorderLayout.NORTH);
+        this.add(title, BorderLayout.NORTH);
 
+        // Πάνελ αναζήτησης με JComboBox και κουμπί αναζήτησης
         JPanel searchPanel = new JPanel(new FlowLayout());
-
         searchPanel.add(new JLabel("Choose service:"));
+
         serviceComboBox = new JComboBox<>();
         loadServiceTypes();
         searchPanel.add(serviceComboBox);
@@ -28,18 +41,28 @@ public class FindTechnicianScreen extends JPanel {
         searchBtn.addActionListener(e -> searchTechnicians());
         searchPanel.add(searchBtn);
 
-        add(searchPanel, BorderLayout.CENTER);
+        this.add(searchPanel, BorderLayout.NORTH);
 
-        resultsArea = new JTextArea(10, 40);
-        resultsArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(resultsArea);
-        add(scrollPane, BorderLayout.SOUTH);
+        // Λίστα με τους τεχνικούς μέσα σε ScrollPane
+        listModel = new DefaultListModel<>();
+        techniciansList = new JList<>(listModel);
+        techniciansList.setVisibleRowCount(10);
+        JScrollPane scrollPane = new JScrollPane(techniciansList);
 
+        this.add(scrollPane, BorderLayout.CENTER);
+
+        // Κουμπί επιλογής τεχνικού
+        JButton selectBtn = new JButton("Select Technician");
+        selectBtn.addActionListener(e -> selectTechnician());
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(selectBtn);
+
+        // Κουμπί πίσω
         JButton backBtn = new JButton("Back");
         backBtn.addActionListener(e -> mainApp.switchScreen(new ClientActionScreen(mainApp)));
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.add(backBtn);
-        add(bottomPanel, BorderLayout.PAGE_END);
+
+        this.add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void loadServiceTypes() {
@@ -49,7 +72,8 @@ public class FindTechnicianScreen extends JPanel {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                serviceComboBox.addItem(rs.getString("service"));
+                String service = rs.getString("service");
+                serviceComboBox.addItem(service);
             }
 
             rs.close();
@@ -61,46 +85,55 @@ public class FindTechnicianScreen extends JPanel {
     }
 
     private void searchTechnicians() {
-        resultsArea.setText("");
-
+        listModel.clear();
         String selectedService = (String) serviceComboBox.getSelectedItem();
+
         if (selectedService == null) {
-            resultsArea.setText("No service selected.");
+            JOptionPane.showMessageDialog(this, "Please select a service first.", "No Service Selected", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345")) {
-            String query = "SELECT u.name, u.email, u.phone " +
-                           "FROM users u " +
-                           "JOIN technicians t ON u.id = t.user_id " +
-                           "JOIN technician_services ts ON t.user_id = ts.technician_id " +
-                           "WHERE ts.service = ?";
+            String query = "SELECT u.name, t.rating FROM users u " +
+                    "JOIN technicians t ON u.id = t.user_id " +
+                    "JOIN technician_services ts ON t.user_id = ts.technician_id " +
+                    "WHERE ts.service = ? " +
+                    "ORDER BY t.rating DESC";
 
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, selectedService);
             ResultSet rs = stmt.executeQuery();
 
-            List<String> results = new ArrayList<>();
+            boolean foundAny = false;
             while (rs.next()) {
+                foundAny = true;
                 String name = rs.getString("name");
-                String email = rs.getString("email");
-                String phone = rs.getString("phone");
-                results.add(name + " - " + email + " - " + phone);
+                double rating = rs.getDouble("rating");
+                String technicianInfo = name + " (Rating: " + rating + ")";
+                listModel.addElement(technicianInfo);
             }
 
-            if (results.isEmpty()) {
-                resultsArea.setText("No technicians available for this service.");
-            } else {
-                for (String res : results) {
-                    resultsArea.append(res + "\n");
-                }
+            if (!foundAny) {
+                JOptionPane.showMessageDialog(this, "No technicians available for this service.", "No Results", JOptionPane.INFORMATION_MESSAGE);
             }
 
             rs.close();
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            resultsArea.setText("Error searching technicians.");
+            JOptionPane.showMessageDialog(this, "Error searching technicians.", "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void selectTechnician() {
+        String selected = techniciansList.getSelectedValue();
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, "Please select a technician from the list.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Εδώ μπορείς να κάνεις ό,τι θες με τον επιλεγμένο τεχνικό
+        JOptionPane.showMessageDialog(this, "You selected: " + selected, "Technician Selected", JOptionPane.INFORMATION_MESSAGE);
+        // Π.χ. μπορείς να περάσεις την επιλογή στο mainApp ή να συνεχίσεις με άλλο screen
     }
 }
