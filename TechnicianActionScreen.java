@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class TechnicianActionScreen extends JPanel {
@@ -44,7 +42,8 @@ public class TechnicianActionScreen extends JPanel {
             btn.addActionListener(e -> {
                 switch (index) {
                     case 0:
-                        JOptionPane.showMessageDialog(null, "Notifications coming soon!");
+                        // ✅ Άνοιγμα Notifications
+                        mainApp.setContentPanel(new TechnicianNotificationsScreen(mainApp));
                         break;
                     case 1:
                         mainApp.setContentPanel(new TechnicianCalendarScreen(mainApp));
@@ -95,9 +94,9 @@ public class TechnicianActionScreen extends JPanel {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345");
 
             String query = "SELECT u.name, u.email, u.phone, t.specialty, t.rating " +
-                           "FROM users u " +
-                           "JOIN technicians t ON u.id = t.user_id " +
-                           "WHERE u.id = ?";
+                    "FROM users u " +
+                    "JOIN technicians t ON u.id = t.user_id " +
+                    "WHERE u.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
@@ -118,18 +117,18 @@ public class TechnicianActionScreen extends JPanel {
                 userInfoPanel.add(new JLabel("Specialty: " + (specialty != null ? specialty : "N/A")));
                 userInfoPanel.add(Box.createVerticalStrut(5));
                 userInfoPanel.add(new JLabel("Rating: " + rating + "/5.0"));
-                // Κουμπί Logout
-                userInfoPanel.add(Box.createVerticalStrut(10)); // spacing
+                userInfoPanel.add(Box.createVerticalStrut(10));
+
                 JButton logoutButton = new JButton("Logout");
                 logoutButton.addActionListener(e -> {
-                    mainApp.setCurrentUserId(-1); // reset session
-                    mainApp.setCurrentUserRole(null); // reset role if stored
-                    mainApp.switchScreen(new LoginScreen(mainApp)); // go back to login
+                    mainApp.setCurrentUserId(-1);
+                    mainApp.setCurrentUserRole(null);
+                    mainApp.switchScreen(new LoginScreen(mainApp));
                 });
                 JPanel logoutWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER));
                 logoutWrapper.add(logoutButton);
                 userInfoPanel.add(logoutWrapper);
-                
+
             } else {
                 userInfoPanel.add(new JLabel("User not found"));
             }
