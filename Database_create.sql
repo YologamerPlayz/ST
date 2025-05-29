@@ -132,3 +132,10 @@ CREATE TABLE messages (
   content         TEXT NOT NULL,
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE technician_services (
+  technician_id INT NOT NULL,
+  service VARCHAR(50) NOT NULL,
+  PRIMARY KEY (technician_id, service),
+  FOREIGN KEY (technician_id) REFERENCES technicians(user_id) ON DELETE CASCADE
+);

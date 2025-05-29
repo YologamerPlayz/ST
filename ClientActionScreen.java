@@ -41,6 +41,9 @@ public class ClientActionScreen extends JPanel {
             JButton btn = new JButton(actions[i]);
             gbc.gridy = i + 1;
             centerPanel.add(btn, gbc);
+            if (actions[i].equals("Find Your Technician")) {
+                btn.addActionListener(e -> mainApp.switchScreen(new FindTechnicianScreen(mainApp)));
+            }
         }
         
         JButton changeAddressBtn = new JButton("Change Address");
