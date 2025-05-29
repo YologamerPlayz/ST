@@ -139,3 +139,14 @@ CREATE TABLE technician_services (
   PRIMARY KEY (technician_id, service),
   FOREIGN KEY (technician_id) REFERENCES technicians(user_id) ON DELETE CASCADE
 );
+
+CREATE TABLE history (
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER NOT NULL
+        REFERENCES clients(user_id)
+        ON DELETE CASCADE,
+    technician_id INTEGER NOT NULL
+        REFERENCES technicians(user_id)
+        ON DELETE SET NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
