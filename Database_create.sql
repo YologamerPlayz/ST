@@ -16,8 +16,7 @@ CREATE TABLE clients (
   user_id        INTEGER PRIMARY KEY
     REFERENCES users(id)
     ON DELETE CASCADE,
-  address        TEXT,
-  history        TEXT
+  address        TEXT
 );
 
 -- 3. Πίνακας τεχνικών (technician)
@@ -94,7 +93,19 @@ CREATE TABLE payments (
     CHECK (status IN ('Pending','Completed','Failed'))
 );
 
--- 8. Αξιολογήσεις (reviews)
+-- 8. Ιστορικό (history)
+CREATE TABLE history (
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER NOT NULL
+        REFERENCES clients(user_id)
+        ON DELETE CASCADE,
+    technician_id INTEGER NOT NULL
+        REFERENCES technicians(user_id)
+        ON DELETE SET NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 9. Αξιολογήσεις (reviews)
 CREATE TABLE reviews (
   id           SERIAL PRIMARY KEY,
   appointment_id INTEGER NOT NULL
@@ -107,7 +118,7 @@ CREATE TABLE reviews (
   comment      TEXT
 );
 
--- 9. Συνομιλίες & Μηνύματα (conversations & messages)
+-- 10. Συνομιλίες & Μηνύματα (conversations & messages)
 CREATE TABLE conversations (
   id           SERIAL PRIMARY KEY
 );
@@ -131,22 +142,4 @@ CREATE TABLE messages (
     REFERENCES users(id),
   content         TEXT NOT NULL,
   created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE technician_services (
-  technician_id INT NOT NULL,
-  service VARCHAR(50) NOT NULL,
-  PRIMARY KEY (technician_id, service),
-  FOREIGN KEY (technician_id) REFERENCES technicians(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE history (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER NOT NULL
-        REFERENCES clients(user_id)
-        ON DELETE CASCADE,
-    technician_id INTEGER NOT NULL
-        REFERENCES technicians(user_id)
-        ON DELETE SET NULL,
-    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
