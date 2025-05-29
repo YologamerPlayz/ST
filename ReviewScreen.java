@@ -195,10 +195,49 @@ public class ReviewScreen extends JPanel {
             checkStmt.close();
 
             JOptionPane.showMessageDialog(this, "Η αξιολόγηση αποθηκεύτηκε επιτυχώς.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            updateTechnicianRating(technicianId);
             loadReviews();
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Αποτυχία αποθήκευσης αξιολόγησης.", "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void updateTechnicianRating(int technicianId) {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345")) {
+            String getRatings = "SELECT rating FROM reviews WHERE technician_id = ? ORDER BY rating";
+            PreparedStatement stmt = conn.prepareStatement(getRatings);
+            stmt.setInt(1, technicianId);
+            ResultSet rs = stmt.executeQuery();
+
+            java.util.List<Integer> ratings = new java.util.ArrayList<>();
+            while (rs.next()) {
+                ratings.add(rs.getInt("rating"));
+            }
+
+            rs.close();
+            stmt.close();
+
+            if (!ratings.isEmpty()) {
+                double median;
+                int size = ratings.size();
+                if (size % 2 == 1) {
+                    median = ratings.get(size / 2);
+                } else {
+                    median = (ratings.get(size / 2 - 1) + ratings.get(size / 2)) / 2.0;
+                }
+
+                String update = "UPDATE technicians SET rating = ? WHERE user_id = ?";
+                PreparedStatement updateStmt = conn.prepareStatement(update);
+                updateStmt.setDouble(1, median);
+                updateStmt.setInt(2, technicianId);
+                updateStmt.executeUpdate();
+                updateStmt.close();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to update technician rating.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
