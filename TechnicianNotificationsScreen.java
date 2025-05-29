@@ -14,7 +14,7 @@ public class TechnicianNotificationsScreen extends JPanel {
         setLayout(new BorderLayout(10,10));
         setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        JLabel title = new JLabel("Ειδοποιήσεις Ραντεβού", JLabel.CENTER);
+        JLabel title = new JLabel("Î•Î¹Î´Î¿Ï€Î¿Î¹Î®ÏƒÎµÎ¹Ï‚ Î¡Î±Î½Ï„ÎµÎ²Î¿Ï�", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         add(title, BorderLayout.NORTH);
 
@@ -24,7 +24,7 @@ public class TechnicianNotificationsScreen extends JPanel {
         JScrollPane scrollPane = new JScrollPane(notificationsPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        backButton = new JButton("Πίσω");
+        backButton = new JButton("Î Î¯ÏƒÏ‰");
         backButton.addActionListener(e -> mainApp.switchScreen(new TechnicianActionScreen(mainApp)));
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -67,7 +67,7 @@ public class TechnicianNotificationsScreen extends JPanel {
                 Date requestedDate = rs.getDate("requested_date");
                 Time requestedTime = rs.getTime("requested_time");
 
-                // Panel για κάθε αίτημα
+                // Panel Î³Î¹Î± ÎºÎ¬Î¸Îµ Î±Î¯Ï„Î·Î¼Î±
                 JPanel requestPanel = new JPanel(new BorderLayout(5,5));
                 requestPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                 requestPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
@@ -76,19 +76,19 @@ public class TechnicianNotificationsScreen extends JPanel {
                 infoArea.setEditable(false);
                 infoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
                 infoArea.setText(
-                        "Αίτημα Ραντεβού #" + requestId + "\n" +
-                                "Πελάτης: " + clientName + "\n" +
+                        "Î‘Î¯Ï„Î·Î¼Î± Î¡Î±Î½Ï„ÎµÎ²Î¿Ï� #" + requestId + "\n" +
+                                "Î ÎµÎ»Î¬Ï„Î·Ï‚: " + clientName + "\n" +
                                 "Email: " + clientEmail + "\n" +
-                                "Τηλέφωνο: " + clientPhone + "\n" +
-                                "Υπηρεσία: " + serviceType + "\n" +
-                                "Ημερομηνία: " + requestedDate + " Ώρα: " + requestedTime + "\n"
+                                "Î¤Î·Î»Î­Ï†Ï‰Î½Î¿: " + clientPhone + "\n" +
+                                "Î¥Ï€Î·Ï�ÎµÏƒÎ¯Î±: " + serviceType + "\n" +
+                                "Î—Î¼ÎµÏ�Î¿Î¼Î·Î½Î¯Î±: " + requestedDate + " Î�Ï�Î±: " + requestedTime + "\n"
                 );
                 requestPanel.add(infoArea, BorderLayout.CENTER);
 
                 JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                JButton acceptBtn = new JButton("Αποδοχή");
-                JButton rejectBtn = new JButton("Άρνηση");
+                JButton acceptBtn = new JButton("Î‘Ï€Î¿Î´Î¿Ï‡Î®");
+                JButton rejectBtn = new JButton("Î†Ï�Î½Î·ÏƒÎ·");
 
                 acceptBtn.addActionListener(e -> {
                     handleAcceptRequest(requestId, technicianId, clientName, requestedDate, requestedTime);
@@ -108,7 +108,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             }
 
             if (!hasResults) {
-                JLabel noRequestsLabel = new JLabel("Δεν υπάρχουν νέα αιτήματα για τον τεχνικό σας.");
+                JLabel noRequestsLabel = new JLabel("Î”ÎµÎ½ Ï…Ï€Î¬Ï�Ï‡Î¿Ï…Î½ Î½Î­Î± Î±Î¹Ï„Î®Î¼Î±Ï„Î± Î³Î¹Î± Ï„Î¿Î½ Ï„ÎµÏ‡Î½Î¹ÎºÏŒ ÏƒÎ±Ï‚.");
                 noRequestsLabel.setFont(new Font("Arial", Font.ITALIC, 16));
                 noRequestsLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 notificationsPanel.add(noRequestsLabel);
@@ -119,7 +119,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             conn.close();
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Σφάλμα κατά την φόρτωση των ειδοποιήσεων.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Î£Ï†Î¬Î»Î¼Î± ÎºÎ±Ï„Î¬ Ï„Î·Î½ Ï†ÏŒÏ�Ï„Ï‰ÏƒÎ· Ï„Ï‰Î½ ÎµÎ¹Î´Î¿Ï€Î¿Î¹Î®ÏƒÎµÏ‰Î½.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 
@@ -132,14 +132,13 @@ public class TechnicianNotificationsScreen extends JPanel {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345");
             conn.setAutoCommit(false);
 
-            // 1. Ενημέρωση status σε Confirmed
+            // Step 1: Update appointment request to Confirmed
             String updateRequest = "UPDATE appointment_requests SET status = 'Confirmed' WHERE id = ?";
             PreparedStatement pstmtUpdate = conn.prepareStatement(updateRequest);
             pstmtUpdate.setInt(1, requestId);
             pstmtUpdate.executeUpdate();
 
-            // 2. Εισαγωγή στο appointments
-            // Για client_id χρειαζόμαστε από το appointment_requests το client_id:
+            // Step 2: Get client_id from appointment_requests
             String selectClientId = "SELECT client_id FROM appointment_requests WHERE id = ?";
             PreparedStatement pstmtSelect = conn.prepareStatement(selectClientId);
             pstmtSelect.setInt(1, requestId);
@@ -157,6 +156,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             rs.close();
             pstmtSelect.close();
 
+            // Step 3: Insert appointment
             String insertAppointment = "INSERT INTO appointments (request_id, client_id, technician_id, appointment_date, appointment_time, status) " +
                     "VALUES (?, ?, ?, ?, ?, 'Confirmed')";
             PreparedStatement pstmtInsert = conn.prepareStatement(insertAppointment);
@@ -165,13 +165,21 @@ public class TechnicianNotificationsScreen extends JPanel {
             pstmtInsert.setInt(3, technicianId);
             pstmtInsert.setDate(4, new java.sql.Date(date.getTime()));
             pstmtInsert.setTime(5, time);
-
             pstmtInsert.executeUpdate();
+            pstmtInsert.close();
+
+            // ✅ Step 4: Insert into history table
+            String insertHistory = "INSERT INTO history (client_id, technician_id) VALUES (?, ?)";
+            PreparedStatement pstmtHistory = conn.prepareStatement(insertHistory);
+            pstmtHistory.setInt(1, clientId);
+            pstmtHistory.setInt(2, technicianId);
+            pstmtHistory.executeUpdate();
+            pstmtHistory.close();
 
             conn.commit();
             conn.close();
 
-            JOptionPane.showMessageDialog(this, "Το αίτημα αποδεχτήκε επιτυχώς!", "Επιτυχία", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Το αίτημα αποδέχτηκε επιτυχώς!", "Επιτυχία", JOptionPane.INFORMATION_MESSAGE);
             loadNotifications();
 
         } catch (SQLException e) {
@@ -194,15 +202,15 @@ public class TechnicianNotificationsScreen extends JPanel {
             conn.close();
 
             if (rows > 0) {
-                JOptionPane.showMessageDialog(this, "Το αίτημα απορρίφθηκε.", "Ενημέρωση", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Î¤Î¿ Î±Î¯Ï„Î·Î¼Î± Î±Ï€Î¿Ï�Ï�Î¯Ï†Î¸Î·ÎºÎµ.", "Î•Î½Î·Î¼Î­Ï�Ï‰ÏƒÎ·", JOptionPane.INFORMATION_MESSAGE);
                 loadNotifications();
             } else {
-                JOptionPane.showMessageDialog(this, "Το αίτημα δεν βρέθηκε.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Î¤Î¿ Î±Î¯Ï„Î·Î¼Î± Î´ÎµÎ½ Î²Ï�Î­Î¸Î·ÎºÎµ.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Σφάλμα κατά την απόρριψη του αιτήματος.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Î£Ï†Î¬Î»Î¼Î± ÎºÎ±Ï„Î¬ Ï„Î·Î½ Î±Ï€ÏŒÏ�Ï�Î¹ÏˆÎ· Ï„Î¿Ï… Î±Î¹Ï„Î®Î¼Î±Ï„Î¿Ï‚.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
