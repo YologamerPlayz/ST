@@ -14,17 +14,17 @@ INSERT INTO users (name, password, email, phone) VALUES
 ('Ioanna Stathopoulou','123456789', 'ioanna@example.com', '6900000010');
 
 -- Εισαγωγή 10 clients (ίδια user_ids με τους παραπάνω)
-INSERT INTO clients (user_id, address, history) VALUES
-(1, 'Athens, Greece', 'Καμία ιστορικότητα'),
-(2, 'Thessaloniki, Greece', 'Παλαιός πελάτης'),
-(3, 'Patra, Greece', 'Νέος πελάτης'),
-(4, 'Heraklion, Greece', ''),
-(5, 'Larisa, Greece', 'Επαναλαμβανόμενος πελάτης'),
-(6, 'Volos, Greece', ''),
-(7, 'Ioannina, Greece', ''),
-(8, 'Kavala, Greece', 'Συχνή επικοινωνία'),
-(9, 'Rhodes, Greece', ''),
-(10, 'Chania, Greece', 'Προτιμά μετρητά');
+INSERT INTO clients (user_id, address) VALUES
+(1, 'Athens, Greece'),
+(2, 'Thessaloniki, Greece'),
+(3, 'Patra, Greece'),
+(4, 'Heraklion, Greece'),
+(5, 'Larisa, Greece'),
+(6, 'Volos, Greece'),
+(7, 'Ioannina, Greece'),
+(8, 'Kavala, Greece'),
+(9, 'Rhodes, Greece'),
+(10, 'Chania, Greece');
 
 
 -- Εισαγωγή 10 τεχνικών (users)
@@ -53,16 +53,7 @@ INSERT INTO technicians (user_id, specialty, rating) VALUES
 (19, 'Υδραυλικός', 4.3),
 (20, 'Ηλεκτρολόγος', 4.8);
 
--- Εισαγωγή στον πίνακα technician_services για λειτουργία του κουμπιού Find your technician
-INSERT INTO technician_services (technician_id, service) VALUES
-(11, 'Ηλεκτρολόγος'),
-(12, 'Ψυκτικός'),
-(13, 'Υδραυλικός'),
-(14, 'Ηλεκτρολόγος'),
-(15, 'Ψυκτικός'),
-(16, 'Υδραυλικός'),
-(17, 'Ηλεκτρολόγος'),
-(18, 'Ψυκτικός'),
-(19, 'Υδραυλικός'),
-(20, 'Ηλεκτρολόγος');
-
+INSERT INTO history (client_id, technician_id, date)
+VALUES (1, 11, '2024-12-10 14:30:00'),
+       (1, 11, '2025-01-15 10:00:00'),
+       (1, 11, '2025-03-05 09:45:00');
