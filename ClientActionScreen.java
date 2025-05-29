@@ -57,6 +57,7 @@ public class ClientActionScreen extends JPanel {
         });
 
         JButton viewHistoryBtn = new JButton("View History");
+        viewHistoryBtn.addActionListener(e -> mainApp.switchScreen(new UserHistoryScreen(mainApp)));
         gbc.gridy = actions.length + 2;
         centerPanel.add(viewHistoryBtn, gbc);
 
@@ -111,7 +112,7 @@ public class ClientActionScreen extends JPanel {
                 userInfoPanel.add(Box.createVerticalStrut(5));
                 userInfoPanel.add(new JLabel("Phone: " + (phone != null ? phone : "N/A")));
                 userInfoPanel.add(Box.createVerticalStrut(5));
-                userInfoPanel.add(new JLabel("Address: " + (address != null ? phone : "N/A")));
+                userInfoPanel.add(new JLabel("Address: " + (address != null ? address : "N/A")));
                 
                 userInfoPanel.add(Box.createVerticalStrut(10)); // spacing
                 JButton logoutButton = new JButton("Logout");
