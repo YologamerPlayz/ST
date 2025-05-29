@@ -29,7 +29,6 @@ public class FindTechnicianScreen extends JPanel {
         title.setFont(new Font("Arial", Font.BOLD, 20));
         this.add(title, BorderLayout.NORTH);
 
-        // Πάνελ αναζήτησης με JComboBox και κουμπί αναζήτησης
         JPanel searchPanel = new JPanel(new FlowLayout());
         searchPanel.add(new JLabel("Choose service:"));
 
@@ -43,21 +42,17 @@ public class FindTechnicianScreen extends JPanel {
 
         this.add(searchPanel, BorderLayout.NORTH);
 
-        // Λίστα με τους τεχνικούς μέσα σε ScrollPane
         listModel = new DefaultListModel<>();
         techniciansList = new JList<>(listModel);
         techniciansList.setVisibleRowCount(10);
         JScrollPane scrollPane = new JScrollPane(techniciansList);
-
         this.add(scrollPane, BorderLayout.CENTER);
 
-        // Κουμπί επιλογής τεχνικού
         JButton selectBtn = new JButton("Select Technician");
         selectBtn.addActionListener(e -> selectTechnician());
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottomPanel.add(selectBtn);
 
-        // Κουμπί πίσω
         JButton backBtn = new JButton("Back");
         backBtn.addActionListener(e -> mainApp.switchScreen(new ClientActionScreen(mainApp)));
         bottomPanel.add(backBtn);
@@ -132,8 +127,7 @@ public class FindTechnicianScreen extends JPanel {
             return;
         }
 
-        // Εδώ μπορείς να κάνεις ό,τι θες με τον επιλεγμένο τεχνικό
-        JOptionPane.showMessageDialog(this, "You selected: " + selected, "Technician Selected", JOptionPane.INFORMATION_MESSAGE);
-        // Π.χ. μπορείς να περάσεις την επιλογή στο mainApp ή να συνεχίσεις με άλλο screen
+        String technicianName = selected.split(" \\(")[0]; // Μόνο το όνομα
+        mainApp.switchScreen(new TechnicianOptionsScreen(mainApp, technicianName));
     }
 }
