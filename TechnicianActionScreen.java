@@ -49,7 +49,7 @@ public class TechnicianActionScreen extends JPanel {
                         mainApp.setContentPanel(new TechnicianCalendarScreen(mainApp));
                         break;
                     case 2:
-                        JOptionPane.showMessageDialog(null, "History feature coming soon!");
+                        mainApp.setContentPanel(new UserHistoryScreen(mainApp));
                         break;
                 }
             });
