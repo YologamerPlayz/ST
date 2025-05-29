@@ -49,7 +49,10 @@ public class TechnicianOptionsScreen extends JPanel {
         assistanceButton.addActionListener(e -> {
             mainApp.switchScreen(new TechnicianContactScreen(mainApp, technicianId));
         });
-
+        
+        reviewButton.addActionListener(e -> {
+        	mainApp.switchScreen(new ReviewScreen(mainApp, technicianId));
+        });
         // Add logic here for realTimeButton and reviewButton when needed
     }
 

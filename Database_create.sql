@@ -108,11 +108,10 @@ CREATE TABLE history (
 -- 9. Αξιολογήσεις (reviews)
 CREATE TABLE reviews (
   id           SERIAL PRIMARY KEY,
-  appointment_id INTEGER NOT NULL
-    REFERENCES appointments(id)
-    ON DELETE CASCADE,
   client_id    INTEGER NOT NULL
     REFERENCES clients(user_id),
+  technician_id INTEGER NOT NULL
+	REFERENCES technicians(user_id),
   rating       SMALLINT NOT NULL
     CHECK (rating BETWEEN 1 AND 5),
   comment      TEXT
