@@ -3,7 +3,7 @@ import javax.swing.*;
 public class MainApp extends JFrame {
 
     public MainApp() {
-        setTitle("Μαστοράκος");
+        setTitle("Mastorakos");
         setSize(600, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
