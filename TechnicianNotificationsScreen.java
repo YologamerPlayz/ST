@@ -14,7 +14,7 @@ public class TechnicianNotificationsScreen extends JPanel {
         setLayout(new BorderLayout(10,10));
         setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        JLabel title = new JLabel("Î•Î¹Î´Î¿Ï€Î¿Î¹Î®ÏƒÎµÎ¹Ï‚ Î¡Î±Î½Ï„ÎµÎ²Î¿Ï�", JLabel.CENTER);
+        JLabel title = new JLabel("Appointment Notifications", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         add(title, BorderLayout.NORTH);
 
@@ -24,7 +24,7 @@ public class TechnicianNotificationsScreen extends JPanel {
         JScrollPane scrollPane = new JScrollPane(notificationsPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        backButton = new JButton("Î Î¯ÏƒÏ‰");
+        backButton = new JButton("Back");
         backButton.addActionListener(e -> mainApp.switchScreen(new TechnicianActionScreen(mainApp)));
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -67,7 +67,6 @@ public class TechnicianNotificationsScreen extends JPanel {
                 Date requestedDate = rs.getDate("requested_date");
                 Time requestedTime = rs.getTime("requested_time");
 
-                // Panel Î³Î¹Î± ÎºÎ¬Î¸Îµ Î±Î¯Ï„Î·Î¼Î±
                 JPanel requestPanel = new JPanel(new BorderLayout(5,5));
                 requestPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                 requestPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 140));
@@ -76,19 +75,19 @@ public class TechnicianNotificationsScreen extends JPanel {
                 infoArea.setEditable(false);
                 infoArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
                 infoArea.setText(
-                        "Î‘Î¯Ï„Î·Î¼Î± Î¡Î±Î½Ï„ÎµÎ²Î¿Ï� #" + requestId + "\n" +
-                                "Î ÎµÎ»Î¬Ï„Î·Ï‚: " + clientName + "\n" +
+                        "Appointment Request #" + requestId + "\n" +
+                                "Client: " + clientName + "\n" +
                                 "Email: " + clientEmail + "\n" +
-                                "Î¤Î·Î»Î­Ï†Ï‰Î½Î¿: " + clientPhone + "\n" +
-                                "Î¥Ï€Î·Ï�ÎµÏƒÎ¯Î±: " + serviceType + "\n" +
-                                "Î—Î¼ÎµÏ�Î¿Î¼Î·Î½Î¯Î±: " + requestedDate + " Î�Ï�Î±: " + requestedTime + "\n"
+                                "Phone: " + clientPhone + "\n" +
+                                "Service: " + serviceType + "\n" +
+                                "Date: " + requestedDate + " Time: " + requestedTime + "\n"
                 );
                 requestPanel.add(infoArea, BorderLayout.CENTER);
 
                 JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-                JButton acceptBtn = new JButton("Î‘Ï€Î¿Î´Î¿Ï‡Î®");
-                JButton rejectBtn = new JButton("Î†Ï�Î½Î·ÏƒÎ·");
+                JButton acceptBtn = new JButton("Accept");
+                JButton rejectBtn = new JButton("Reject");
 
                 acceptBtn.addActionListener(e -> {
                     handleAcceptRequest(requestId, technicianId, clientName, requestedDate, requestedTime);
@@ -108,7 +107,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             }
 
             if (!hasResults) {
-                JLabel noRequestsLabel = new JLabel("Î”ÎµÎ½ Ï…Ï€Î¬Ï�Ï‡Î¿Ï…Î½ Î½Î­Î± Î±Î¹Ï„Î®Î¼Î±Ï„Î± Î³Î¹Î± Ï„Î¿Î½ Ï„ÎµÏ‡Î½Î¹ÎºÏŒ ÏƒÎ±Ï‚.");
+                JLabel noRequestsLabel = new JLabel("No new appointment requests found for this technician.");
                 noRequestsLabel.setFont(new Font("Arial", Font.ITALIC, 16));
                 noRequestsLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 notificationsPanel.add(noRequestsLabel);
@@ -119,7 +118,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             conn.close();
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Î£Ï†Î¬Î»Î¼Î± ÎºÎ±Ï„Î¬ Ï„Î·Î½ Ï†ÏŒÏ�Ï„Ï‰ÏƒÎ· Ï„Ï‰Î½ ÎµÎ¹Î´Î¿Ï€Î¿Î¹Î®ÏƒÎµÏ‰Î½.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error while loading notifications.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 
@@ -132,13 +131,11 @@ public class TechnicianNotificationsScreen extends JPanel {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345");
             conn.setAutoCommit(false);
 
-            // Step 1: Update appointment request to Confirmed
             String updateRequest = "UPDATE appointment_requests SET status = 'Confirmed' WHERE id = ?";
             PreparedStatement pstmtUpdate = conn.prepareStatement(updateRequest);
             pstmtUpdate.setInt(1, requestId);
             pstmtUpdate.executeUpdate();
 
-            // Step 2: Get client_id from appointment_requests
             String selectClientId = "SELECT client_id FROM appointment_requests WHERE id = ?";
             PreparedStatement pstmtSelect = conn.prepareStatement(selectClientId);
             pstmtSelect.setInt(1, requestId);
@@ -148,7 +145,7 @@ public class TechnicianNotificationsScreen extends JPanel {
             if (rs.next()) {
                 clientId = rs.getInt("client_id");
             } else {
-                JOptionPane.showMessageDialog(this, "Δεν βρέθηκε πελάτης για το αίτημα.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Client not found for the request.", "Error", JOptionPane.ERROR_MESSAGE);
                 conn.rollback();
                 conn.close();
                 return;
@@ -156,7 +153,6 @@ public class TechnicianNotificationsScreen extends JPanel {
             rs.close();
             pstmtSelect.close();
 
-            // Step 3: Insert appointment
             String insertAppointment = "INSERT INTO appointments (request_id, client_id, technician_id, appointment_date, appointment_time, status) " +
                     "VALUES (?, ?, ?, ?, ?, 'Confirmed')";
             PreparedStatement pstmtInsert = conn.prepareStatement(insertAppointment);
@@ -168,7 +164,6 @@ public class TechnicianNotificationsScreen extends JPanel {
             pstmtInsert.executeUpdate();
             pstmtInsert.close();
 
-            // ✅ Step 4: Insert into history table
             String insertHistory = "INSERT INTO history (client_id, technician_id) VALUES (?, ?)";
             PreparedStatement pstmtHistory = conn.prepareStatement(insertHistory);
             pstmtHistory.setInt(1, clientId);
@@ -179,12 +174,12 @@ public class TechnicianNotificationsScreen extends JPanel {
             conn.commit();
             conn.close();
 
-            JOptionPane.showMessageDialog(this, "Το αίτημα αποδέχτηκε επιτυχώς!", "Επιτυχία", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "The appointment request was accepted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             loadNotifications();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Σφάλμα κατά την αποδοχή του αιτήματος.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error while accepting the appointment request.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -202,15 +197,15 @@ public class TechnicianNotificationsScreen extends JPanel {
             conn.close();
 
             if (rows > 0) {
-                JOptionPane.showMessageDialog(this, "Î¤Î¿ Î±Î¯Ï„Î·Î¼Î± Î±Ï€Î¿Ï�Ï�Î¯Ï†Î¸Î·ÎºÎµ.", "Î•Î½Î·Î¼Î­Ï�Ï‰ÏƒÎ·", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "The appointment request was rejected.", "Info", JOptionPane.INFORMATION_MESSAGE);
                 loadNotifications();
             } else {
-                JOptionPane.showMessageDialog(this, "Î¤Î¿ Î±Î¯Ï„Î·Î¼Î± Î´ÎµÎ½ Î²Ï�Î­Î¸Î·ÎºÎµ.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Appointment request not found.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Î£Ï†Î¬Î»Î¼Î± ÎºÎ±Ï„Î¬ Ï„Î·Î½ Î±Ï€ÏŒÏ�Ï�Î¹ÏˆÎ· Ï„Î¿Ï… Î±Î¹Ï„Î®Î¼Î±Ï„Î¿Ï‚.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error while rejecting the appointment request.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
