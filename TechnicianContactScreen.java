@@ -48,9 +48,7 @@ public class TechnicianContactScreen extends JPanel {
                 "Κλήση στον τεχνικό: " + technicianName,
                 "Τηλεφωνική Κλήση", JOptionPane.INFORMATION_MESSAGE));
 
-        messageButton.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Αποστολή μηνύματος στον τεχνικό: " + technicianName,
-                "Αποστολή Μηνύματος", JOptionPane.INFORMATION_MESSAGE));
+        messageButton.addActionListener(e -> mainApp.switchScreen(new ClientMessageTechnicianScreen(mainApp, technicianId)));
     }
 
     private void fetchTechnicianName() {
