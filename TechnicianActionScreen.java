@@ -12,14 +12,12 @@ public class TechnicianActionScreen extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Top panel με κουμπί εμφάνισης πληροφοριών χρήστη
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton showUserInfoBtn = new JButton("Show User Info");
         showUserInfoBtn.addActionListener(e -> toggleUserInfo());
         topPanel.add(showUserInfoBtn);
         add(topPanel, BorderLayout.NORTH);
 
-        // Center panel με τίτλο και κουμπιά
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 20, 15, 20);
@@ -30,8 +28,7 @@ public class TechnicianActionScreen extends JPanel {
         gbc.gridy = 0;
         centerPanel.add(title, gbc);
 
-        // Κουμπιά επιλογών
-        String[] actions = {"Notifications", "View Calendar", "View History"};
+        String[] actions = {"Notifications", "View Calendar", "View History", "Message Clients"};
         for (int i = 0; i < actions.length; i++) {
             String action = actions[i];
             JButton btn = new JButton(action);
@@ -42,22 +39,23 @@ public class TechnicianActionScreen extends JPanel {
             btn.addActionListener(e -> {
                 switch (index) {
                     case 0:
-                        // ✅ Άνοιγμα Notifications
                         mainApp.setContentPanel(new TechnicianNotificationsScreen(mainApp));
                         break;
                     case 1:
                         mainApp.setContentPanel(new TechnicianCalendarScreen(mainApp));
                         break;
                     case 2:
-                        mainApp.setContentPanel(new UserHistoryScreen(mainApp));
+                    	mainApp.setContentPanel(new UserHistoryScreen(mainApp));
                         break;
+                    case 3:
+                    	mainApp.switchScreen(new TechnicianMessageLauncherScreen(mainApp));
+                    	break;
                 }
             });
         }
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Πάνελ με πληροφορίες χρήστη (αρχικά κρυφό)
         userInfoPanel = new JPanel();
         userInfoPanel.setLayout(new BoxLayout(userInfoPanel, BoxLayout.Y_AXIS));
         userInfoPanel.setBorder(BorderFactory.createTitledBorder("User Information"));
