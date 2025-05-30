@@ -12,7 +12,7 @@ public class ClientNotificationsScreen extends JPanel {
         setLayout(new BorderLayout(10,10));
         setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        JLabel title = new JLabel("Ειδοποιήσεις Ραντεβού", JLabel.CENTER);
+        JLabel title = new JLabel("Appointment Notifications", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         add(title, BorderLayout.NORTH);
 
@@ -21,7 +21,7 @@ public class ClientNotificationsScreen extends JPanel {
         JScrollPane scrollPane = new JScrollPane(notificationsPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        backButton = new JButton("Πίσω");
+        backButton = new JButton("Back");
         backButton.addActionListener(e -> mainApp.switchScreen(new ClientActionScreen(mainApp)));
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         bottomPanel.add(backButton);
@@ -38,7 +38,7 @@ public class ClientNotificationsScreen extends JPanel {
 
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345");
 
-            // Επιλέγουμε αιτήματα που έχουν απαντηθεί (Confirmed ή Rejected)
+            // Select answered requests (Confirmed or Rejected)
             String query = "SELECT ar.id, ar.service_type, ar.requested_date, ar.requested_time, ar.status, " +
                     "t.name AS technician_name " +
                     "FROM appointment_requests ar " +
@@ -67,14 +67,14 @@ public class ClientNotificationsScreen extends JPanel {
                 notification.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                 notification.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
 
-                String statusText = status.equals("Confirmed") ? "ΑΠΟΔΕΧΤΗΚΕ" : "ΑΠΕΡΡΙΨΕ";
+                String statusText = status.equals("Confirmed") ? "ACCEPTED" : "REJECTED";
 
                 JTextArea info = new JTextArea(
-                        "Αίτημα Ραντεβού #" + requestId + "\n" +
-                                "Υπηρεσία: " + serviceType + "\n" +
-                                "Ημερομηνία: " + date + " Ώρα: " + time + "\n" +
-                                "Τεχνικός: " + (technicianName != null ? technicianName : "Άγνωστος") + "\n" +
-                                "Κατάσταση: " + statusText
+                        "Appointment Request #" + requestId + "\n" +
+                        "Service: " + serviceType + "\n" +
+                        "Date: " + date + " Time: " + time + "\n" +
+                        "Technician: " + (technicianName != null ? technicianName : "Unknown") + "\n" +
+                        "Status: " + statusText
                 );
                 info.setEditable(false);
                 info.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -85,7 +85,7 @@ public class ClientNotificationsScreen extends JPanel {
             }
 
             if (!hasResults) {
-                JLabel noNotifLabel = new JLabel("Δεν υπάρχουν ειδοποιήσεις για εσάς.");
+                JLabel noNotifLabel = new JLabel("There are no notifications for you.");
                 noNotifLabel.setFont(new Font("Arial", Font.ITALIC, 16));
                 noNotifLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 notificationsPanel.add(noNotifLabel);
@@ -96,7 +96,7 @@ public class ClientNotificationsScreen extends JPanel {
             conn.close();
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Σφάλμα κατά τη φόρτωση των ειδοποιήσεων.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error while loading notifications.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 
@@ -104,4 +104,3 @@ public class ClientNotificationsScreen extends JPanel {
         repaint();
     }
 }
- 
