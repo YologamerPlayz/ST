@@ -20,7 +20,7 @@ public class AppointmentRequestScreen extends JPanel {
 
         setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Προγραμματισμός Ραντεβού", JLabel.CENTER);
+        JLabel title = new JLabel("Schedule Appointment", JLabel.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 20));
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         add(title, BorderLayout.NORTH);
@@ -28,28 +28,28 @@ public class AppointmentRequestScreen extends JPanel {
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
-        formPanel.add(new JLabel("Επιλέξτε ημερομηνία:"));
+        formPanel.add(new JLabel("Select date:"));
         dateChooser = new JDateChooser();
-        dateChooser.setMinSelectableDate(new Date()); // Από σήμερα και μετά
+        dateChooser.setMinSelectableDate(new Date()); // From today onwards
         formPanel.add(dateChooser);
 
-        formPanel.add(new JLabel("Επιλέξτε ώρα:"));
+        formPanel.add(new JLabel("Select time:"));
         timeCombo = new JComboBox<>(new String[] {
                 "09:00", "10:00", "11:00", "12:00",
                 "13:00", "14:00", "15:00", "16:00"
         });
         formPanel.add(timeCombo);
 
-        formPanel.add(new JLabel("Είδος υπηρεσίας:"));
+        formPanel.add(new JLabel("Service type:"));
         serviceField = new JTextField();
         formPanel.add(serviceField);
 
         add(formPanel, BorderLayout.CENTER);
 
-        JButton submitButton = new JButton("Υποβολή Αιτήματος");
+        JButton submitButton = new JButton("Submit Request");
         submitButton.addActionListener(e -> submitAppointmentRequest());
 
-        JButton backButton = new JButton("Πίσω");
+        JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> mainApp.switchScreen(new TechnicianOptionsScreen(mainApp, technicianId)));
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -65,7 +65,7 @@ public class AppointmentRequestScreen extends JPanel {
         String serviceType = serviceField.getText().trim();
 
         if (selectedDate == null || selectedTime == null || serviceType.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Συμπληρώστε όλα τα πεδία.", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -86,11 +86,11 @@ public class AppointmentRequestScreen extends JPanel {
             stmt.executeUpdate();
             stmt.close();
 
-            JOptionPane.showMessageDialog(this, "Το αίτημα καταχωρήθηκε με επιτυχία.");
+            JOptionPane.showMessageDialog(this, "Request submitted successfully.");
             mainApp.switchScreen(new TechnicianOptionsScreen(mainApp, technicianId));
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Σφάλμα κατά την υποβολή του αιτήματος.", "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error submitting the request.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
