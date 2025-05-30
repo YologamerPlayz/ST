@@ -2,24 +2,24 @@ USE TL;
 
 -- Εισαγωγή 10 χρηστών
 INSERT INTO users (name, password, email, phone) VALUES
-('Giorgos Papadopoulos', '1234567', 'giorgos@example.com', '6900000001'),
+('Giorgos Tsarou', '1234567', 'giorgos@example.com', '6900000001'),
 ('Maria Ioannou','2345678', 'maria@example.com', '6900000002'),
 ('Kostas Nikolaou','3456789', 'kostas@example.com', '6900000003'),
 ('Eleni Papadaki','4567891', 'eleni@example.com', '6900000004'),
-('Nikos Dimitriou','5678912', 'nikos@example.com', '6900000005'),
-('Anna Georgiou','6789123', 'anna@example.com', '6900000006'),
+('Takis Hokan','5678912', 'pappous@example.com', '6900000005'),
+('Aris Mougkopetros','6789123', 'aris@example.com', '6900000006'),
 ('Petros Sagkanis','7891234', 'petros@example.com', '6900000007'),
 ('Sofia Papagianni','8912345', 'sofia@example.com', '6900000008'),
-('Dimitris Vlahos','9123456', 'dimitris@example.com', '6900000009'),
+('Thodoris Mamoutas','9123456', 'thodoris@example.com', '6900000009'),
 ('Ioanna Stathopoulou','123456789', 'ioanna@example.com', '6900000010');
 
 -- Εισαγωγή 10 clients (ίδια user_ids με τους παραπάνω)
 INSERT INTO clients (user_id, address) VALUES
-(1, 'Athens, Greece'),
+(1, 'Vrina, Greece'),
 (2, 'Thessaloniki, Greece'),
 (3, 'Patra, Greece'),
 (4, 'Heraklion, Greece'),
-(5, 'Larisa, Greece'),
+(5, 'Petri, Greece'),
 (6, 'Volos, Greece'),
 (7, 'Ioannina, Greece'),
 (8, 'Kavala, Greece'),
