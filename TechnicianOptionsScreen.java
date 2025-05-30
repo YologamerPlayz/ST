@@ -14,7 +14,7 @@ public class TechnicianOptionsScreen extends JPanel {
 
         fetchTechnicianName();  // Get name from DB
 
-        JLabel titleLabel = new JLabel("Επιλέξτε ενέργεια για τον τεχνικό: " + technicianName, JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Choose action for technician: " + technicianName, JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
         this.add(titleLabel, BorderLayout.NORTH);
@@ -23,9 +23,9 @@ public class TechnicianOptionsScreen extends JPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 10, 10, 10));
 
-        JButton realTimeButton = createLargeButton("Προγραμματισμός Ραντεβού");
-        JButton assistanceButton = createLargeButton("Άμεση Βοήθεια (Τηλέφωνο ή Μήνυμα)");
-        JButton reviewButton = createLargeButton("Δημιουργία και Προβολή Αξιολογήσεων");
+        JButton realTimeButton = createLargeButton("Schedule Appointment");
+        JButton assistanceButton = createLargeButton("Immediate Assistance (Call or Message)");
+        JButton reviewButton = createLargeButton("Create and View Reviews");
 
         buttonPanel.add(realTimeButton);
         buttonPanel.add(Box.createVerticalStrut(20));
@@ -37,7 +37,7 @@ public class TechnicianOptionsScreen extends JPanel {
         centerWrapper.add(buttonPanel);
         this.add(centerWrapper, BorderLayout.CENTER);
 
-        JButton backButton = new JButton("Πίσω");
+        JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Arial", Font.PLAIN, 14));
         backButton.addActionListener(e -> mainApp.switchScreen(new FindTechnicianScreen(mainApp)));
 
@@ -45,7 +45,7 @@ public class TechnicianOptionsScreen extends JPanel {
         bottomPanel.add(backButton);
         this.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Assistance screen — use ID or name as needed
+        // Button actions
         assistanceButton.addActionListener(e -> {
             mainApp.switchScreen(new TechnicianContactScreen(mainApp, technicianId));
         });
@@ -57,14 +57,11 @@ public class TechnicianOptionsScreen extends JPanel {
         realTimeButton.addActionListener(e -> {
             mainApp.switchScreen(new AppointmentRequestScreen(mainApp, technicianId, mainApp.getCurrentUserId()));
         });
-
     }
 
     private void fetchTechnicianName() {
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345")) {
-            String query = """
-                SELECT name FROM users WHERE id = ?
-            """;
+            String query = "SELECT name FROM users WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, technicianId);
             ResultSet rs = stmt.executeQuery();
@@ -72,13 +69,13 @@ public class TechnicianOptionsScreen extends JPanel {
             if (rs.next()) {
                 technicianName = rs.getString("name");
             } else {
-                technicianName = "Άγνωστος";
+                technicianName = "Unknown";
             }
 
             rs.close();
             stmt.close();
         } catch (SQLException e) {
-            technicianName = "Σφάλμα ανάκτησης ονόματος";
+            technicianName = "Error retrieving name";
             e.printStackTrace();
         }
     }
