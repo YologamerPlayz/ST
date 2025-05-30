@@ -6,6 +6,7 @@ public class TechnicianContactScreen extends JPanel {
     private MainApp mainApp;
     private int technicianId;
     private String technicianName = "";
+    private String technicianPhone = "";
 
     public TechnicianContactScreen(MainApp mainApp, int technicianId) {
         this.mainApp = mainApp;
@@ -13,6 +14,7 @@ public class TechnicianContactScreen extends JPanel {
         this.setLayout(new BorderLayout());
 
         fetchTechnicianName();
+        fetchTechnicianPhone();
 
         JLabel titleLabel = new JLabel("Contact Technician: " + technicianName, JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -45,7 +47,7 @@ public class TechnicianContactScreen extends JPanel {
 
         // Button actions
         callButton.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Calling technician: " + technicianName,
+                "Calling technician: " + technicianName + " (" + technicianPhone + ")",
                 "Phone Call", JOptionPane.INFORMATION_MESSAGE));
 
         messageButton.addActionListener(e -> mainApp.switchScreen(new ClientMessageTechnicianScreen(mainApp, technicianId)));
@@ -68,6 +70,27 @@ public class TechnicianContactScreen extends JPanel {
             stmt.close();
         } catch (SQLException e) {
             technicianName = "Error retrieving name";
+            e.printStackTrace();
+        }
+    }
+
+    private void fetchTechnicianPhone() {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/TL", "root", "12345")) {
+            String query = "SELECT phone FROM users WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, technicianId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                technicianPhone = rs.getString("phone");
+            } else {
+                technicianPhone = "Unknown";
+            }
+
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            technicianPhone = "Error retrieving phone";
             e.printStackTrace();
         }
     }
