@@ -14,7 +14,7 @@ public class TechnicianContactScreen extends JPanel {
 
         fetchTechnicianName();
 
-        JLabel titleLabel = new JLabel("Επικοινωνία με τον τεχνικό: " + technicianName, JLabel.CENTER);
+        JLabel titleLabel = new JLabel("Contact Technician: " + technicianName, JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
         this.add(titleLabel, BorderLayout.NORTH);
@@ -23,8 +23,8 @@ public class TechnicianContactScreen extends JPanel {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(50, 10, 10, 10));
 
-        JButton callButton = createLargeButton("Τηλεφωνική Κλήση");
-        JButton messageButton = createLargeButton("Αποστολή Μηνύματος");
+        JButton callButton = createLargeButton("Phone Call");
+        JButton messageButton = createLargeButton("Send Message");
 
         buttonPanel.add(callButton);
         buttonPanel.add(Box.createVerticalStrut(20));
@@ -35,7 +35,7 @@ public class TechnicianContactScreen extends JPanel {
         this.add(centerWrapper, BorderLayout.CENTER);
 
         // Back button
-        JButton backButton = new JButton("Πίσω");
+        JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Arial", Font.PLAIN, 14));
         backButton.addActionListener(e -> mainApp.switchScreen(new TechnicianOptionsScreen(mainApp, technicianId)));
 
@@ -45,8 +45,8 @@ public class TechnicianContactScreen extends JPanel {
 
         // Button actions
         callButton.addActionListener(e -> JOptionPane.showMessageDialog(this,
-                "Κλήση στον τεχνικό: " + technicianName,
-                "Τηλεφωνική Κλήση", JOptionPane.INFORMATION_MESSAGE));
+                "Calling technician: " + technicianName,
+                "Phone Call", JOptionPane.INFORMATION_MESSAGE));
 
         messageButton.addActionListener(e -> mainApp.switchScreen(new ClientMessageTechnicianScreen(mainApp, technicianId)));
     }
@@ -61,13 +61,13 @@ public class TechnicianContactScreen extends JPanel {
             if (rs.next()) {
                 technicianName = rs.getString("name");
             } else {
-                technicianName = "Άγνωστος";
+                technicianName = "Unknown";
             }
 
             rs.close();
             stmt.close();
         } catch (SQLException e) {
-            technicianName = "Σφάλμα ανάκτησης ονόματος";
+            technicianName = "Error retrieving name";
             e.printStackTrace();
         }
     }
